@@ -1,25 +1,27 @@
 #!/usr/bin/python3
+
 import requests
 import json
+import sys
+if __name__ == "__main__":
+    USER_URL = 'https://jsonplaceholder.typicode.com/users/{}'.format(sys.argv[1])
+    res = requests.get(USER_URL)
+    user = json.loads(res.text)
+    num = sys.argv[1]
+    TODO_URL = 'https://jsonplaceholder.typicode.com/todos'.format(num)
+    res = requests.get(TODO_URL)
+    todos = json.loads(res.text)
+    completed_tasks =[]
 
-USER_ID = 1
-USER_URL = f'https://jsonplaceholder.typicode.com/users/${USER_ID}'
-TODO_URL = f'https://jsonplaceholder.typicode.com/todos'
-
-employee = requests.get(USER_URL).json()
-todos = requests.get(TODO_URL).json()
-
-todo_counter = 0
-completed_counter = 0
-completed_tasks =[]
-for todo in todos:
-    if todo['userId'] == USER_ID:
-        todo_counter += 1
-        if todo['completed'] is True:
-            completed_counter += 1
-            completed_tasks.append(todo['title'])
-
-employee_name = employee['name']
-print(f"Employee {employee_name} is done with tasks({completed_counter}/{todo_counter})")
-for title in completed_tasks:
-    print(title)
+    todo_counter = 0
+    completed_counter = 0
+    
+    for i in todos:
+        if i['completed']:
+            completed_tasks.append(i)
+    print("Employee {} is done with tasks({}/{}):"format(
+        user['name'],
+        len(completed_tasks),
+        len(todos)))
+    for i in completed_tasks:
+        print("\t {}".format(i["title"]))
