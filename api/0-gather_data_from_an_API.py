@@ -13,8 +13,6 @@ if __name__ == "__main__":
     todos = json.loads(res.text)
     completed_tasks =[]
 
-    todo_counter = 0
-    completed_counter = 0
     
     for i in todos:
         if i['completed']:
