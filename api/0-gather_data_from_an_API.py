@@ -19,6 +19,3 @@ for todo in todos:
 print(employee['name'])
 print(todo_counter)
 print(completed_counter)
-
-
-
