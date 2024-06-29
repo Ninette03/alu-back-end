@@ -1,30 +1,22 @@
 #!/usr/bin/python3
-"""
-    Script that exports data in the CSV format
-"""
+"""get TODO list"""
+
 import csv
 import json
 import requests
-from sys import argv
-
+import sys
 if __name__ == "__main__":
-    
-    request_employee = requests.get(
-        'https://jsonplaceholder.typicode.com/users/{}'.format(argv[1]))
-    
-    user = json.loads(request_employee.text)
-    username = user.get("username")
-    request_todos = requests.get(
-        'https://jsonplaceholder.typicode.com/todos?userId={}'.format(argv[1]))
-  
-    tasks = {}
-    user_todos = json.loads(request_todos.text)
-    for dictionary in user_todos:
-        tasks.update({dictionary.get("title"): dictionary.get("completed")})
-
-    with open('{}.csv'.format(argv[1]), mode='w', newline='') as file:
-        file_editor = csv.writer(file, delimiter=',', quoting=csv.QUOTE_ALL)
-        for k, v in tasks.items():
-            file_editor.writerow([argv[1], username, v, k])
-
-    print('Data exported to {}.csv'.format(argv[1]))
+    link = "https://jsonplaceholder.typicode.com/users/{}".format(sys.argv[1])
+    res = requests.get(link)
+    user = json.loads(res.text)
+    num = sys.argv[1]
+    link = "https://jsonplaceholder.typicode.com/users/{}/todos".format(num)
+    res = requests.get(link)
+    todos = json.loads(res.text)
+    csv_data = [["{}".format(i["userId"]),
+                user["username"],
+                "{}".format(i["completed"]),
+                 i["title"]] for i in todos]
+    with open("{}.csv".format(user["id"]), 'w', encoding='utf-8') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        writer.writerows(csv_data)
